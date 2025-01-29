@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
+from waitress import serve  # For production on Windows, remove if using Flask's built-in server
 
 app = Flask(__name__)
 
@@ -108,10 +109,13 @@ def new_testament():
     print(books)  # Check data in the console
     return render_template('new_testament.html', new_testament_books=books)
 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
 
+# For production (Windows), use Waitress, otherwise use Flask's built-in server
 if __name__ == '__main__':
-    # Run Flask app with dynamic port for Render deployment
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    # Use Waitress for production (Windows) or Flask's built-in server for development
+    serve(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Waitress for production
+    # app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Flask for local dev
