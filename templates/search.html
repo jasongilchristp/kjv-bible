@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Search Results for "{{ query }}"</h2>
+{% if results %}
+<div class="card">
+    <div class="card-body">
+        {% for result in results %}
+        <p class="mb-3">
+            <strong>{{ result.Book }} {{ result.Chapter }}:{{ result.Verse }}</strong><br>
+            {{ result.Text }}
+        </p>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">No results found.</div>
+{% endif %}
+{% endblock %}

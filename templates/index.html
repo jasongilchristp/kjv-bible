@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Books of the Bible</h2>
+<div class="row">
+    <!-- Old Testament Section (3 Columns) -->
+    <div class="col-12">
+        <h3>Old Testament</h3>
+        <div class="row">
+            {% for book in old_testament_books %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book }}</h5>
+                        <a href="{{ url_for('chapters', book=book) }}" class="btn btn-primary">View Chapters</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">No books available</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- New Testament Section (3 Columns) -->
+    <div class="col-12 mt-4">
+        <h3>New Testament</h3>
+        <div class="row">
+            {% for book in new_testament_books %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book }}</h5>
+                        <a href="{{ url_for('chapters', book=book) }}" class="btn btn-primary">View Chapters</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">No books available</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
