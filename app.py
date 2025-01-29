@@ -1,18 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
-from waitress import serve  # For production on Windows, remove if using Flask's built-in server
 
 app = Flask(__name__)
 
 # Load Bible data with uppercase columns
 def load_bible_data():
-    df = pd.read_csv('data/kjv.csv')
+    current_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current directory of the app
+    file_path = os.path.join(current_dir, 'data', 'kjv.csv')  # Build the path to the CSV file
+    df = pd.read_csv(file_path)
     return df
 
 # Add Testament column manually
 def add_testament_column(df):
-    # Define Old Testament books (sample, you should adjust according to your data)
+    # Define Old Testament books
     old_testament_books = [
         'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 
         'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles',
@@ -22,7 +23,7 @@ def add_testament_column(df):
         'Haggai', 'Zechariah', 'Malachi'
     ]
     
-    # Define New Testament books (sample, you should adjust according to your data)
+    # Define New Testament books
     new_testament_books = [
         'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians', 
         'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', 
@@ -30,21 +31,21 @@ def add_testament_column(df):
         '1 John', '2 John', '3 John', 'Jude', 'Revelation'
     ]
     
-    # Add Testament column based on book names
+    # Add Testament column
     df['Testament'] = df['Book'].apply(lambda x: 'Old' if x in old_testament_books else 'New' if x in new_testament_books else None)
     return df
 
 # Get Old Testament books
 def get_old_testament_books():
     df = load_bible_data()
-    df = add_testament_column(df)  # Add the Testament column
+    df = add_testament_column(df)
     old_testament = df[df['Testament'] == 'Old']['Book'].unique()
     return old_testament
 
 # Get New Testament books
 def get_new_testament_books():
     df = load_bible_data()
-    df = add_testament_column(df)  # Add the Testament column
+    df = add_testament_column(df)
     new_testament = df[df['Testament'] == 'New']['Book'].unique()
     return new_testament
 
@@ -100,22 +101,16 @@ def search():
 @app.route('/old-testament')
 def old_testament():
     books = get_old_testament_books()
-    print(books)  # Check data in the console
     return render_template('old_testament.html', old_testament_books=books)
 
 @app.route('/new-testament')
 def new_testament():
     books = get_new_testament_books()
-    print(books)  # Check data in the console
     return render_template('new_testament.html', new_testament_books=books)
-
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-# For production (Windows), use Waitress, otherwise use Flask's built-in server
 if __name__ == '__main__':
-    # Use Waitress for production (Windows) or Flask's built-in server for development
-    serve(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Waitress for production
-    # app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))  # Flask for local dev
+    app.run(debug=True, host='0.0.0.0', port=5000)
